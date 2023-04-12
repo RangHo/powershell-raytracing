@@ -39,8 +39,15 @@ function Invoke-Raytracing
                 [int]$ir = $r * 255 -as [int]
                 [int]$ig = $g * 255 -as [int]
                 [int]$ib = $b * 255 -as [int]
- 
-                $bitmap.SetPixel($x, $y, [System.Drawing.Color]::FromArgb($ir, $ig, $ib))
+
+                # Set the pixels at the current location
+                # Note that the y-coordinate is flipped as the bitmap is stored
+                # top-to-bottom, unlike the world coordinate
+                $bitmap.SetPixel(
+                    $x,
+                    $ImageHeight - $y - 1,
+                    [System.Drawing.Color]::FromArgb($ir, $ig, $ib)
+                )
             }
         }
         $bitmap.Save($OutputFile, [System.Drawing.Imaging.ImageFormat]::Png)
