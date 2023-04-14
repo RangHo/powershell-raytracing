@@ -4,7 +4,7 @@ $public = @(Get-ChildItem -Path $PSScriptRoot\Public -Filter *.ps1 -Recurse -Err
 $private = @(Get-ChildItem -Path $PSScriptRoot\Private -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue)
 
 # Source all files
-foreach ($file in ($public + $private))
+foreach ($file in ($classes + $public + $private))
 {
     try
     {
