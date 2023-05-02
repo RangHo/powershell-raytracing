@@ -6,11 +6,27 @@ Describe "Class Vector3" {
         $v.GetType().Name | Should -Be "Vector3"
     }
 
+    It "Creates a copy of an existing vector" {
+        $v = [Vector3]::new(1, 2, 3)
+        $v2 = [Vector3]::new($v)
+        $v2.GetType().Name | Should -Be "Vector3"
+        $v2.X | Should -Be 1
+        $v2.Y | Should -Be 2
+        $v2.Z | Should -Be 3
+    }
+
     It "Has a static zero vector" {
         [Vector3]::Zero.GetType().Name | Should -Be "Vector3"
         [Vector3]::Zero.X | Should -Be 0
         [Vector3]::Zero.Y | Should -Be 0
         [Vector3]::Zero.Z | Should -Be 0
+    }
+
+    It "Should be able to normalize itself" {
+        $v = [Vector3]::new(1, 2, 3)
+        $v.Length() | Should -Not -Be 1
+        $vNormal = $v.Normalize()
+        $vNormal.Length() | Should -Be 1
     }
 
     It "Should be able to add two vectors" {

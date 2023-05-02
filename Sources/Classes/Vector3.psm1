@@ -8,6 +8,13 @@ class Vector3
 
     static [Vector3]$Zero = [Vector3]::new(0, 0, 0)
 
+    Vector3([Vector3]$that)
+    {
+        $this.X = $that.X
+        $this.Y = $that.Y
+        $this.Z = $that.Z
+    }
+
     Vector3([double]$x, [double]$y, [double]$z)
     {
         $this.X = $x
