@@ -1,10 +1,12 @@
-# Get list of class and function defintion files
-$classes = @(Get-ChildItem -Path $PSScriptRoot\Classes -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue)
+# Load needed assemblies
+Add-Type -AssemblyName System.Drawing
+
+# Get list of function defintion files
 $public = @(Get-ChildItem -Path $PSScriptRoot\Public -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue)
 $private = @(Get-ChildItem -Path $PSScriptRoot\Private -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue)
 
 # Source all files
-foreach ($file in ($classes + $public + $private))
+foreach ($file in ($private + $public))
 {
     try
     {

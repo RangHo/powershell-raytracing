@@ -1,15 +1,22 @@
-using assembly System.Drawing
+using module ..\Classes\Color.psm1
 
+<#
+.SYNOPSIS
+    Renders a scene using raytracing techniques.
+#>
 function Invoke-Raytracing
 {
     [CmdletBinding()]
     param(
+        # Width of the rendered output.
         [Parameter()]
         [int]$ImageWidth = 256,
 
+        # Height of the rendered output.
         [Parameter()]
         [int]$ImageHeight = 256,
 
+        # Name of the output file.
         [Parameter()]
         [string]$OutputFile = "output.png"
     )
@@ -30,15 +37,11 @@ function Invoke-Raytracing
                   -Status "Rendering pixel ($x, $y)" `
                   -PercentComplete (($y * $ImageWidth + $x) / ($ImageWidth * $ImageHeight) * 100)
 
-                # Calculate each pixel's color in the range [0, 1]
-                [double]$r = ($x -as [double]) / ($ImageWidth - 1)
-                [double]$g = ($y -as [double]) / ($ImageHeight - 1)
-                [double]$b = 0.25
-
-                # Convert the color to a 32-bit integer
-                [int]$ir = $r * 255 -as [int]
-                [int]$ig = $g * 255 -as [int]
-                [int]$ib = $b * 255 -as [int]
+                [Color]$pixel = [Color]::new(
+                    ($x -as [double]) / ($ImageWidth - 1),
+                    ($y -as [double]) / ($ImageHeight - 1),
+                    0.25
+                )
 
                 # Set the pixels at the current location
                 # Note that the y-coordinate is flipped as the bitmap is stored
@@ -46,7 +49,7 @@ function Invoke-Raytracing
                 $bitmap.SetPixel(
                     $x,
                     $ImageHeight - $y - 1,
-                    [System.Drawing.Color]::FromArgb($ir, $ig, $ib)
+                    $pixel
                 )
             }
         }

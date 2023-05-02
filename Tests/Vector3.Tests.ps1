@@ -1,6 +1,4 @@
-BeforeAll {
-    . "$PSScriptRoot\..\Sources\Classes\Vector3.ps1"
-}
+using module ..\Sources\Classes\Vector3.psm1
 
 Describe "Class Vector3" {
     It "Should be able to create a Vector3" {

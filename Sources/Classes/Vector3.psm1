@@ -1,5 +1,3 @@
-using namespace System
-
 class Vector3
 {
     [double]$X
@@ -24,7 +22,7 @@ class Vector3
 
     [double]Length()
     {
-        return [Math]::Sqrt($this.LengthSquared())
+        return [System.Math]::Sqrt($this.LengthSquared())
     }
 
     [double]Dot([Vector3]$that)
