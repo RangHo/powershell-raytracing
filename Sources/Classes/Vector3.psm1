@@ -32,6 +32,11 @@ class Vector3
         return [System.Math]::Sqrt($this.LengthSquared())
     }
 
+    [Vector3]Normal()
+    {
+        return $this / $this.Length()
+    }
+
     [double]Dot([Vector3]$that)
     {
         return `

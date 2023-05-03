@@ -22,10 +22,10 @@ Describe "Class Vector3" {
         [Vector3]::Zero.Z | Should -Be 0
     }
 
-    It "Should be able to normalize itself" {
+    It "Should be able to get the normalized version of itself" {
         $v = [Vector3]::new(1, 2, 3)
         $v.Length() | Should -Not -Be 1
-        $vNormal = $v.Normalize()
+        $vNormal = $v.Normal()
         $vNormal.Length() | Should -Be 1
     }
 
