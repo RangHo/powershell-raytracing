@@ -1,5 +1,3 @@
-using module ..\Classes\Color.psm1
-
 <#
 .SYNOPSIS
     Renders a scene using raytracing techniques.
@@ -21,6 +19,27 @@ function Invoke-Raytracing
         [string]$OutputFile = "output.png"
     )
 
+    begin
+    {
+        # Image settings
+        $aspectRatio = $ImageWidth / $ImageHeight
+
+        # Camera settings
+        $viewportHeight = 2.0
+        $viewportWidth = $aspectRatio * $viewportHeight
+        $focalLength = 1.0
+
+        # World coordinate helpers
+        $origin = [Vector3]::Zero
+        $horizontal = [Vector3]::new($viewportWidth, 0, 0)
+        $vertical = [Vector3]::new(0, $viewportHeight, 0)
+        $lowerLeftCorner = `
+          $origin `
+          - ($horizontal / 2) `
+          - ($vertical / 2) `
+          - [Vector3]::new(0, 0, $focalLength)
+    }
+
     process
     {
         # Create a bitmap to hold the image
@@ -37,11 +56,15 @@ function Invoke-Raytracing
                   -Status "Rendering pixel ($x, $y)" `
                   -PercentComplete (($y * $ImageWidth + $x) / ($ImageWidth * $ImageHeight) * 100)
 
-                [Color]$pixel = [Color]::new(
-                    ($x -as [double]) / ($ImageWidth - 1),
-                    ($y -as [double]) / ($ImageHeight - 1),
-                    0.25
-                )
+                # Cast a ray to determine the current pixel
+                $u = ($x -as [double]) / ($ImageWidth - 1)
+                $v = ($y -as [double]) / ($ImageHeight - 1)
+                $destination = `
+                  $lowerLeftCorner `
+                  + ($horizontal * $u) `
+                  + ($vertical * $v) `
+                  - $origin
+                $pixel = [Ray]::new($origin, $destination) | Get-RayColor
 
                 # Set the pixels at the current location
                 # Note that the y-coordinate is flipped as the bitmap is stored

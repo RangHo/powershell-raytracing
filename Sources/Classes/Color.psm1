@@ -21,7 +21,7 @@ class Color : Vector3
           -SecondValue { param([double]$Value) $this.Z = $Value }
     }
 
-    [System.Drawing.Color] ToDrawingColor()
+    [System.Drawing.Color]ToDrawingColor()
     {
         [int]$ir = $this.R * 255 -as [int]
         [int]$ig = $this.G * 255 -as [int]
@@ -37,5 +37,50 @@ class Color : Vector3
     static [System.Drawing.Color]op_Explicit([Color]$color)
     {
         return $color.ToDrawingColor()
+    }
+
+    static [Color]op_Addition([Color]$a, [Color]$b)
+    {
+        return [Color]::new(
+            $a.R + $b.R,
+            $a.G + $b.G,
+            $a.B + $b.B
+        )
+    }
+
+    static [Color]op_Subtraction([Color]$a, [Color]$b)
+    {
+        return [Color]::new(
+            $a.R - $b.R,
+            $a.G - $b.G,
+            $a.B - $b.B
+        )
+    }
+
+    static [Color]op_Multiply([double]$scalar, [Color]$color)
+    {
+        return [Color]::new(
+            $scalar * $color.R,
+            $scalar * $color.G,
+            $scalar * $color.B
+        )
+    }
+
+    static [Color]op_Multiply([Color]$color, [double]$scalar)
+    {
+        return [Color]::new(
+            $scalar * $color.R,
+            $scalar * $color.G,
+            $scalar * $color.B
+        )
+    }
+
+    static [Color]op_Division([Color]$color, [double]$scalar)
+    {
+        return [Color]::new(
+            $color.R / $scalar,
+            $color.G / $scalar,
+            $color.B / $scalar
+        )
     }
 }
