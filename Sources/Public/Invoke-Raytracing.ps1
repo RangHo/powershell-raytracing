@@ -31,13 +31,16 @@ function Invoke-Raytracing
 
         # World coordinate helpers
         $origin = [Vector3]::Zero
-        $horizontal = [Vector3]::new($viewportWidth, 0, 0)
-        $vertical = [Vector3]::new(0, $viewportHeight, 0)
+        $horizontal = New-Vector3 $viewportWidth 0 0
+        $vertical = New-Vector3 0 $viewportHeight 0
         $lowerLeftCorner = `
           $origin `
           - ($horizontal / 2) `
           - ($vertical / 2) `
-          - [Vector3]::new(0, 0, $focalLength)
+          - (New-Vector3 0 0 $focalLength)
+
+        # Scene objects
+        $scene = New-Sphere -Center (New-Vector3 0 0 -1) -Radius 0.5
     }
 
     process
@@ -64,7 +67,7 @@ function Invoke-Raytracing
                   + ($horizontal * $u) `
                   + ($vertical * $v) `
                   - $origin
-                $pixel = [Ray]::new($origin, $destination) | Get-RayColor
+                $pixel = New-Ray $origin $destination | Get-RayColor -World $scene
 
                 # Set the pixels at the current location
                 # Note that the y-coordinate is flipped as the bitmap is stored

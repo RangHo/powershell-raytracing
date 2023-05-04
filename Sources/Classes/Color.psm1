@@ -106,16 +106,23 @@ function New-Color
         $IG,
 
         [Parameter(Mandatory, ParameterSetName='0to255', Position=2)]
-        $IB
+        $IB,
+
+        [Parameter(Mandatory, ParameterSetName='Vector')]
+        [Vector3]$Vector
     )
 
     if ($PSCmdlet.ParameterSetName -eq '0to1')
     {
         Write-Output ([Color]::new($R, $G, $B))
     }
-    else
+    elseif ($PSCmdlet.ParameterSetName -eq '0to255')
     {
         Write-Output ([Color]::new($IR -as [double] / 255, $IG -as [double] / 255, $IB -as [double] / 255))
+    }
+    elseif ($PSCmdlet.ParameterSetName -eq 'Vector')
+    {
+        Write-Output ([Color]::new($Vector.X, $Vector.Y, $Vector.Z))
     }
 }
 

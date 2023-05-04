@@ -4,8 +4,12 @@ function Get-RayColor
     [OutputType([Color])]
     param(
         # The ray to get the color for.
-        [Parameter(ValueFromPipeline)]
-        [Ray]$Ray
+        [Parameter(Mandatory, ValueFromPipeline)]
+        $Ray,
+
+        # The list of hittables available in the world.
+        [Parameter()]
+        $World
     )
 
     process
@@ -15,13 +19,16 @@ function Get-RayColor
         {
             throw "Expected a Ray object, got $($Ray.GetType().Name)"
         }
-
-        $t = Hit-Sphere -Center (New-Vector3 0 0 1) -Radius 0.5 -Ray $Ray
-
-        if ($t)
+        if ($World.GetType().BaseType.Name -ne 'BaseHittable')
         {
-            $normal = ($Ray.At($t) - (New-Vector3 0 0 -1)).Normal()
-            return (New-Color ($normal.X + 1) ($normal.Y + 1) ($normal.Z + 1)) / 2
+            throw "Expected a BaseHittable object, got $($World.GetType().Name)"
+        }
+
+        $result = $World.Hit($Ray, 0, [double]::MaxValue)
+
+        if ($result.IsAvailable)
+        {
+            return 0.5 * ((New-Color -Vector $result.Normal) + (New-Color 1 1 1))
         }
 
         $normalDirection = $Ray.Direction.Normal()
