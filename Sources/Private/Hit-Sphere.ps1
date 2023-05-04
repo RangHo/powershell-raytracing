@@ -1,7 +1,7 @@
 function Hit-Sphere
 {
     [CmdletBinding()]
-    [OutputType([bool])]
+    [OutputType([double])]
     param(
         [Parameter(Mandatory)]
         [Vector3]$Center,
@@ -16,11 +16,16 @@ function Hit-Sphere
     process
     {
         $oc = $Ray.Origin - $Center
-        $a = $Ray.Direction.Dot($Ray.Direction)
-        $b = 2 * $oc.Dot($Ray.Direction)
-        $c = $oc.Dot($oc) - $Radius * $Radius
-        $discriminant = $b * $b - 4 * $a * $c
+        $a = $Ray.Direction.LengthSquared()
+        $h = $oc.Dot($Ray.Direction)
+        $c = $oc.LengthSquared() - $Radius * $Radius
+        $discriminant = $h * $h - $a * $c
 
-        Write-Output ($discriminant -gt 0)
+        if ($discriminant -lt 0)
+        {
+            return $null
+        }
+
+        Write-Output ((-$h - [Math]::Sqrt($discriminant)) / $a)
     }
 }
