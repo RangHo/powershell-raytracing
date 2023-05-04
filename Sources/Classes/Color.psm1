@@ -84,3 +84,39 @@ class Color : Vector3
         )
     }
 }
+
+function New-Color
+{
+    [CmdletBinding(DefaultParameterSetName='0to1')]
+    [OutputType([Color])]
+    param(
+        [Parameter(Mandatory, ParameterSetName='0to1', Position=0)]
+        $R,
+
+        [Parameter(Mandatory, ParameterSetName='0to1', Position=1)]
+        $G,
+
+        [Parameter(Mandatory, ParameterSetName='0to1', Position=2)]
+        $B,
+
+        [Parameter(Mandatory, ParameterSetName='0to255', Position=0)]
+        $IR,
+
+        [Parameter(Mandatory, ParameterSetName='0to255', Position=1)]
+        $IG,
+
+        [Parameter(Mandatory, ParameterSetName='0to255', Position=2)]
+        $IB
+    )
+
+    if ($PSCmdlet.ParameterSetName -eq '0to1')
+    {
+        Write-Output ([Color]::new($R, $G, $B))
+    }
+    else
+    {
+        Write-Output ([Color]::new($IR -as [double] / 255, $IG -as [double] / 255, $IB -as [double] / 255))
+    }
+}
+
+Export-ModuleMember -Function New-Color

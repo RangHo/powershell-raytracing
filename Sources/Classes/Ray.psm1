@@ -16,3 +16,20 @@ class Ray
         return $this.Origin + $this.Direction * $t
     }
 }
+
+function New-Ray
+{
+    [CmdletBinding()]
+    [OutputType([Ray])]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+        [Vector3]$Origin,
+
+        [Parameter(Mandatory, Position = 1)]
+        [Vector3]$Direction
+    )
+
+    Write-Output ([Ray]::new($Origin, $Direction))
+}
+
+Export-ModuleMember -Function New-Ray

@@ -16,6 +16,11 @@ function Get-RayColor
             throw "Expected a Ray object, got $($Ray.GetType().Name)"
         }
 
+        if (Hit-Sphere -Center (New-Vector3 0 0 1) -Radius 0.5 -Ray $Ray)
+        {
+            return (New-Color 1 0 0)
+        }
+
         $normalDirection = $Ray.Direction.Normal()
         $t = 0.5 * ($normalDirection.Y + 1.0)
         $color = `

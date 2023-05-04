@@ -91,3 +91,23 @@ class Vector3
         )
     }
 }
+
+function New-Vector3
+{
+    [CmdletBinding()]
+    [OutputType([Vector3])]
+    param(
+        [Parameter(Mandatory, Position=0)]
+        [double]$X,
+
+        [Parameter(Mandatory, Position=1)]
+        [double]$Y,
+
+        [Parameter(Mandatory, Position=2)]
+        [double]$Z
+    )
+
+    Write-Output ([Vector3]::new($X, $Y, $Z))
+}
+
+Export-ModuleMember -Function New-Vector3
