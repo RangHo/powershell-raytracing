@@ -40,7 +40,10 @@ function Invoke-Raytracing
           - (New-Vector3 0 0 $focalLength)
 
         # Scene objects
-        $scene = New-Sphere -Center (New-Vector3 0 0 -1) -Radius 0.5
+        $scene = New-HittableList @(
+            New-Sphere -Center (New-Vector3 0 0 -1) -Radius 0.5
+            New-Sphere -Center (New-Vector3 0 -100.5 -1) -Radius 100
+        )
     }
 
     process
