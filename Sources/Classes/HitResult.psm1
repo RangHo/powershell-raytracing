@@ -26,6 +26,6 @@ class HitResult
     [void]Validate([Ray]$ray)
     {
         $this.IsFrontFacing = $ray.Direction.Dot($this.Normal) -lt 0
-        $this.Noraml = if ($this.IsFrontFacing) { $this.Normal } else { -1 * $this.Normal }
+        $this.Normal = if ($this.IsFrontFacing) { $this.Normal } else { -1 * $this.Normal }
     }
 }
