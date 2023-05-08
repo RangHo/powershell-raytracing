@@ -1,16 +1,35 @@
 <#
 .SYNOPSIS
-    Renders a scene using raytracing techniques.
+Renders a scene using raytracing techniques.
+
+.DESCRIPTION
+Renders a scene using raytracing techniques.
+If no arguments specifying the image size are provided, it will default to a
+square image of 256x256 pixels.
+
+Note that this cmdlet uses vector arithmetic implemented in PowerShell only. Due
+to this nature, image generation is extremely slow. Currently there is no plan
+to improve the performance of this cmdlet, as it aims to be a pure-PowerShell
+implementation of raytracing techniques.
+
+.INPUTS
+None. For now, the scene is hard-coded in the script.
+
+.OUTPUTS
+None. This cmdlet creates a PNG file in the current directory.
+
+.LINK
+https://github.com/RangHo/powershell-raytracing
 #>
 function Invoke-Raytracing
 {
     [CmdletBinding()]
     param(
-        # Width of the rendered output.
+        # Width of the rendered output. Default is 256.
         [Parameter()]
         [int]$ImageWidth = 256,
 
-        # Height of the rendered output.
+        # Height of the rendered output. Default is 256.
         [Parameter()]
         [int]$ImageHeight = 256,
 
