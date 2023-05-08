@@ -46,6 +46,7 @@ class Sphere : BaseHittable
         $result.Position = $Ray.At($root)
         $result.Normal = ($result.Position - $this.Center) / $this.Radius
         $result.Distance = $root
+        $result.Validate($Ray)
 
         return $result
     }

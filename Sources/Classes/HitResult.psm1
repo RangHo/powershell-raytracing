@@ -1,8 +1,11 @@
 using module .\Vector3.psm1
+using module .\Ray.psm1
 
 class HitResult
 {
     [bool]$IsAvailable
+
+    [bool]$IsFrontFacing
     
     [Vector3]$Position
 
@@ -18,5 +21,11 @@ class HitResult
         $this.Position = $null
         $this.Normal = $null
         $this.Distance = $null
+    }
+
+    [void]Validate([Ray]$ray)
+    {
+        $this.IsFrontFacing = $ray.Direction.Dot($this.Normal) -lt 0
+        $this.Noraml = if ($this.IsFrontFacing) { $this.Normal } else { -1 * $this.Normal }
     }
 }
