@@ -22,8 +22,8 @@ jobs:
         run: |
           Import-Module .\Sources\PSRaytracing.psm1
           Invoke-Raytracing `
-            -ImageWidth 1920 `
-            -ImageHeight 1080 `
+            -ImageWidth 192 `
+            -ImageHeight 108 `
             -OutputFile "output.png"
 
       - name: 🚀 Upload to GitHub Gist
