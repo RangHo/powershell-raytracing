@@ -12,6 +12,8 @@ jobs:
   main:
     name: Generate preview output image and deploy
     runs-on: windows-latest
+    permissions:
+      contents: write
 
     steps:
       - name: 📲 Checkout repository
