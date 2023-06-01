@@ -9,6 +9,7 @@ using module .\Classes\HitResult.psm1
 using module .\Classes\BaseHittable.psm1
 using module .\Classes\Sphere.psm1
 using module .\Classes\HittableList.psm1
+using module .\Classes\Camera.psm1
 
 # Get list of function defintion files
 $public = @(Get-ChildItem -Path $PSScriptRoot\Public -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue)

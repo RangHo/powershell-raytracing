@@ -25,13 +25,21 @@ function Invoke-Raytracing
 {
     [CmdletBinding()]
     param(
-        # Width of the rendered output. Default is 256.
+        # Width of the rendered output.
         [Parameter()]
-        [int]$ImageWidth = 256,
+        [int]$ImageWidth = 0,
 
-        # Height of the rendered output. Default is 256.
+        # Height of the rendered output.
         [Parameter()]
-        [int]$ImageHeight = 256,
+        [int]$ImageHeight = 0,
+
+        # Camera object that renders the output.
+        [Parameter()]
+        [Camera]$Camera = $null,
+
+        # Number of samples to use for anti-aliasing. Default is 4.
+        [Parameter()]
+        [int]$Samples = 4,
 
         # Name of the output file.
         [Parameter()]
@@ -40,23 +48,39 @@ function Invoke-Raytracing
 
     begin
     {
-        # Image settings
-        $aspectRatio = $ImageWidth / $ImageHeight
-
         # Camera settings
-        $viewportHeight = 2.0
-        $viewportWidth = $aspectRatio * $viewportHeight
-        $focalLength = 1.0
+        if ($Camera -eq $null -or $Camera.GetType().Name -ne "Camera")
+        {
+            # Make sure both image width and height are specified
+            if ($ImageWidth -eq 0 -or $ImageHeight -eq 0)
+            {
+                throw "Both image width and height must be specified in order to use implicit camera."
+            }
 
-        # World coordinate helpers
-        $origin = [Vector3]::Zero
-        $horizontal = New-Vector3 $viewportWidth 0 0
-        $vertical = New-Vector3 0 $viewportHeight 0
-        $lowerLeftCorner = `
-          $origin `
-          - ($horizontal / 2) `
-          - ($vertical / 2) `
-          - (New-Vector3 0 0 $focalLength)
+            # Create camera
+            $aspectRatio = $ImageWidth / $ImageHeight
+            $Camera = New-Camera -AspectRatio $aspectRatio -FocalLength 1.0
+        }
+
+        # Image dimension settings
+        if ($ImageWidth -eq 0 -and $ImageHeight -eq 0)
+        {
+            throw "At least image width or height must be specified to infer the resulting image dimension."
+        }
+        if ($ImageWidth -eq 0)
+        {
+            $ImageWidth = $ImageHeight * $Camera.AspectRatio -as [int]
+        }
+        if ($ImageHeight -eq 0)
+        {
+            $ImageHeight = $ImageWidth / $Camera.AspectRatio -as [int]
+        }
+
+        # File name settings
+        if (-not $OutputFile.EndsWith(".png"))
+        {
+            $OutputFile = $OutputFile + ".png"
+        }
 
         # Scene objects
         $scene = New-HittableList @(
@@ -81,15 +105,17 @@ function Invoke-Raytracing
                   -Status "Rendering pixel ($x, $y)" `
                   -PercentComplete (($y * $ImageWidth + $x) / ($ImageWidth * $ImageHeight) * 100)
 
-                # Cast a ray to determine the current pixel
-                $u = ($x -as [double]) / ($ImageWidth - 1)
-                $v = ($y -as [double]) / ($ImageHeight - 1)
-                $destination = `
-                  $lowerLeftCorner `
-                  + ($horizontal * $u) `
-                  + ($vertical * $v) `
-                  - $origin
-                $pixel = New-Ray $origin $destination | Get-RayColor -World $scene
+                $pixel = New-Color 0 0 0
+                foreach ($aa in 0..($Samples - 1))
+                {
+                    # Cast a ray to determine the current pixel
+                    $u = ($x + (Get-Random -Minimum 0.0 -Maximum 1.0)) / ($ImageWidth - 1)
+                    $v = ($y + (Get-Random -Minimum 0.0 -Maximum 1.0)) / ($ImageHeight - 1)
+                    $pixel += $Camera.To($u, $v) | Get-RayColor -World $scene
+                }
+
+                # Average the color
+                $pixel /= $Samples
 
                 # Set the pixels at the current location
                 # Note that the y-coordinate is flipped as the bitmap is stored

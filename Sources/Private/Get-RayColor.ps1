@@ -28,15 +28,13 @@ function Get-RayColor
 
         if ($result.IsAvailable)
         {
-            return 0.5 * ((New-Color -Vector $result.Normal) + (New-Color 1 1 1))
+            Write-Output (0.5 * ((New-Color -Vector $result.Normal) + (New-Color 1 1 1)))
         }
-
-        $normalDirection = $Ray.Direction.Normal()
-        $t = 0.5 * ($normalDirection.Y + 1.0)
-        $color = `
-          [Color]::new(1, 1, 1) * (1.0 - $t) `
-          + [Color]::new(0.5, 0.7, 1.0) * $t
-
-        Write-Output $color
+        else
+        {
+            $normalDirection = $Ray.Direction.Normal()
+            $t = 0.5 * ($normalDirection.Y + 1.0)
+            Write-Output ([Color]::new(1, 1, 1) * (1.0 - $t) + [Color]::new(0.5, 0.7, 1.0) * $t)
+        }
     }
 }
