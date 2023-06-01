@@ -24,12 +24,15 @@ jobs:
           Invoke-Raytracing `
             -ImageWidth 16 `
             -ImageHeight 9 `
-            -OutputFile "output.png"
+            -OutputFile "new-output.png"
+            
+      - name: 🔗 Checkout `result` branch and update image
+        run: |
+          git checkout result
+          cp new-output.png output.png
 
-      - name: 🚀 Upload to GitHub Gist
-        uses: exuanbo/actions-deploy-gist@v1
+      - name: 🚀 Commit and push
+        uses: EndBug/add-and-commit@v9
         with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 948658e375e4c21a8485fc3f5c581a2d
-          file_path: output.png
-          file_type: binary
+          add: "output.png"
+          default_author: github_actor
