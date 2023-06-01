@@ -1,0 +1,36 @@
+name: Deploy preview output image
+
+on:
+  # Run when new commits are pushed to the main branch...
+  push:
+    branches: [ "main" ]
+
+  # ...or whenever I tell it to do so
+  workflow_dispatch:
+
+jobs:
+  main:
+    name: Generate preview output image and deploy
+    runs-on: windows-latest
+
+    steps:
+      - name: 📲 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🎨 Generate an output image
+        shell: powershell
+        run: |
+          Import-Module .\Sources\PSRaytracing.psm1
+          Invoke-Raytracing `
+            -ImageWidth 1920 `
+            -ImageHeight 1080 `
+            -OutputFile "output.png"
+
+      - name: 🚀 Upload to GitHub Gist
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: 948658e375e4c21a8485fc3f5c581a2d
+          gist_file_name: powershell-raytracing-result.png 
+          file_path: output.png
+          file_type: binary
