@@ -22,8 +22,8 @@ jobs:
         run: |
           Import-Module .\Sources\PSRaytracing.psm1
           Invoke-Raytracing `
-            -ImageWidth 192 `
-            -ImageHeight 108 `
+            -ImageWidth 16 `
+            -ImageHeight 9 `
             -OutputFile "output.png"
 
       - name: 🚀 Upload to GitHub Gist
@@ -31,6 +31,5 @@ jobs:
         with:
           token: ${{ secrets.GIST_TOKEN }}
           gist_id: 948658e375e4c21a8485fc3f5c581a2d
-          gist_file_name: powershell-raytracing-result.png 
           file_path: output.png
           file_type: binary
