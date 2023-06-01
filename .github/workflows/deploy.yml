@@ -26,10 +26,13 @@ jobs:
             -ImageHeight 9 `
             -OutputFile "new-output.png"
             
-      - name: 🔗 Checkout `result` branch and update image
-        run: |
-          git checkout result
-          cp new-output.png output.png
+      - name: 🔗 Checkout `result` branch
+        uses: actions/checkout@v3
+        with:
+          ref: result
+          
+      - name: ✨ Update image
+        run: cp new-output.png output.png
 
       - name: 🚀 Commit and push
         uses: EndBug/add-and-commit@v9
