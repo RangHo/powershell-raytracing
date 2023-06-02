@@ -4,9 +4,23 @@
 
 Simple path tracer written in PowerShell, based on [Raytracing in One Weekend][1]
 online book.
-Currently, the output image looks like this:
 
-<div align="center"><img src="output.png" /></div>
+Currently, this repository can generate the following image:
+
+<p align="center">
+  <img alt="Preview image" src="https://github.com/RangHo/powershell-raytracing/blob/result/output.png?raw=true" />
+</p>
+
+This image was created using the follwing command every commit made to the `main`
+branch:
+
+```powershell
+Import-Module .\Sources\PSRaytracing.psm1
+Invoke-Raytracing `
+  -ImageWidth 640 `
+  -ImageHeight 360 `
+  -OutputFile "output.png"
+```
 
 ## Why PowerShell of all things
 
