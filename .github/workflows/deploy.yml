@@ -26,7 +26,7 @@ jobs:
           Invoke-Raytracing `
             -ImageWidth 640 `
             -ImageHeight 360 `
-            -OutputFile "new-output.png"
+            -OutputFile "new-output.ppm"
             
       - name: 🔗 Checkout `result` branch
         uses: actions/checkout@v3
@@ -36,6 +36,7 @@ jobs:
           
       - name: ✨ Update image
         run: |
+          convert .\new-output.ppm .\new-output.png
           cd result
           cp ..\new-output.png .\output.png
 
