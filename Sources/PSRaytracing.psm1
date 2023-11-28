@@ -1,6 +1,3 @@
-# Load needed assemblies
-using assembly System.Drawing
-
 # Load user-defined types
 using module .\Classes\Vector3.psm1
 using module .\Classes\Color.psm1

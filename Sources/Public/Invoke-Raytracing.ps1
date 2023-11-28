@@ -16,7 +16,7 @@ implementation of raytracing techniques.
 None. For now, the scene is hard-coded in the script.
 
 .OUTPUTS
-None. This cmdlet creates a PNG file in the current directory.
+None. This cmdlet creates a PPM file in the current directory.
 
 .LINK
 https://github.com/RangHo/powershell-raytracing
@@ -43,7 +43,7 @@ function Invoke-Raytracing
 
         # Name of the output file.
         [Parameter()]
-        [string]$OutputFile = "output.png"
+        [string]$OutputFile = "output.ppm"
     )
 
     begin
@@ -77,9 +77,9 @@ function Invoke-Raytracing
         }
 
         # File name settings
-        if (-not $OutputFile.EndsWith(".png"))
+        if (-not $OutputFile.EndsWith(".ppm"))
         {
-            $OutputFile = $OutputFile + ".png"
+            $OutputFile = $OutputFile + ".ppm"
         }
 
         # Scene objects
@@ -91,11 +91,16 @@ function Invoke-Raytracing
 
     process
     {
-        # Create a bitmap to hold the image
-        $bitmap = New-Object System.Drawing.Bitmap($ImageWidth, $ImageHeight)
+        # Create a new text file to store the PPM output
+        New-Item -Path $OutputFile -ItemType File -Force
 
-        # Save the bitmap to the output file
-        foreach ($y in 0..($ImageHeight - 1))
+        # Write the PPM header
+        Add-Content -Path $OutputFile -Value "P3"
+        Add-Content -Path $OutputFile -Value "$ImageWidth $ImageHeight"
+        Add-Content -Path $OutputFile -Value "255"
+
+        # Render the image
+        foreach ($y in ($ImageHeight - 1)..0)
         {
             foreach ($x in 0..($ImageWidth - 1))
             {
@@ -103,7 +108,7 @@ function Invoke-Raytracing
                 Write-Progress `
                   -Activity "Rendering image" `
                   -Status "Rendering pixel ($x, $y)" `
-                  -PercentComplete (($y * $ImageWidth + $x) / ($ImageWidth * $ImageHeight) * 100)
+                  -PercentComplete ((($ImageHeight - 1 - $y) * $ImageWidth + $x) / ($ImageWidth * $ImageHeight) * 100)
 
                 $pixel = New-Color 0 0 0
                 foreach ($aa in 0..($Samples - 1))
@@ -117,16 +122,14 @@ function Invoke-Raytracing
                 # Average the color
                 $pixel /= $Samples
 
-                # Set the pixels at the current location
-                # Note that the y-coordinate is flipped as the bitmap is stored
-                # top-to-bottom, unlike the world coordinate
-                $bitmap.SetPixel(
-                    $x,
-                    $ImageHeight - $y - 1,
-                    $pixel
-                )
+                # Convert the color to 0-255 range integer 3-tuple
+                $ir = [Math]::Min(255, [Math]::Floor(256 * $pixel.R))
+                $ig = [Math]::Min(255, [Math]::Floor(256 * $pixel.G))
+                $ib = [Math]::Min(255, [Math]::Floor(256 * $pixel.B))
+
+                # Write the pixel to the PPM file
+                Add-Content -Path $OutputFile -Value "$ir $ig $ib"
             }
         }
-        $bitmap.Save($OutputFile, [System.Drawing.Imaging.ImageFormat]::Png)
     }
 }

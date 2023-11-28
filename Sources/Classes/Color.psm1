@@ -21,24 +21,6 @@ class Color : Vector3
           -SecondValue { param([double]$Value) $this.Z = $Value }
     }
 
-    [System.Drawing.Color]ToDrawingColor()
-    {
-        [int]$ir = $this.R * 255 -as [int]
-        [int]$ig = $this.G * 255 -as [int]
-        [int]$ib = $this.B * 255 -as [int]
-        return [System.Drawing.Color]::FromArgb($ir, $ig, $ib)
-    }
-
-    static [System.Drawing.Color]op_Implicit([Color]$color)
-    {
-        return $color.ToDrawingColor()
-    }
-
-    static [System.Drawing.Color]op_Explicit([Color]$color)
-    {
-        return $color.ToDrawingColor()
-    }
-
     static [Color]op_Addition([Color]$a, [Color]$b)
     {
         return [Color]::new(
