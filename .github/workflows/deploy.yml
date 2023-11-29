@@ -36,7 +36,7 @@ jobs:
           
       - name: ✨ Update image
         run: |
-          convert .\new-output.ppm .\new-output.png
+          magick.exe .\new-output.ppm .\new-output.png
           cd result
           cp ..\new-output.png .\output.png
 
